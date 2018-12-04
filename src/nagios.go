@@ -2,14 +2,12 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/newrelic/infra-integrations-sdk/data/metric"
 
@@ -47,23 +45,27 @@ func main() {
 	i, err := integration.New(integrationName, integrationVersion, integration.Args(&args))
 	if err != nil {
 		log.Error("Failed to create integration: %s", err.Error())
+		os.Exit(1)
 	}
 
+	// Set logging verbosity
 	log.SetupLogging(args.Verbose)
 
+	// Read the service checks definitions file
 	conf, err := parseConfigFile(args.ServiceChecksConfig)
 	if err != nil {
 		log.Error("Config parsing failed: %s", err.Error())
 		os.Exit(1)
 	}
 
+	// Run the service checks and store their result
 	if args.HasMetrics() {
 		for _, sc := range conf.ServiceChecks {
 			collectServiceCheck(sc, i)
 		}
 	}
 
-	// Create Entity
+	// Publish the results
 	if err := i.Publish(); err != nil {
 		log.Error("Failed to publish integration: %s", err.Error())
 		os.Exit(1)
@@ -71,11 +73,13 @@ func main() {
 }
 
 func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
+	// Read the file into a string
 	yamlFile, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %s", err.Error())
 	}
 
+	// Parse the file into a serviceCheckConfig struct
 	var conf serviceCheckConfig
 	err = yaml.Unmarshal(yamlFile, &conf)
 	if err != nil {
@@ -86,20 +90,23 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 }
 
 func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
+	// Create the entity
 	e, err := i.Entity(sc.Name, "serviceCheck")
 	if err != nil {
 		log.Error("Failed to get entity for service check %s: %s", sc.Name, err.Error())
-	}
-	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
-	if err != nil {
-		log.Error("Failed to run command %s: %s", sc.Name, err.Error())
+		return
 	}
 
+	// Run the command for the service check
+	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
+
+	// Create a metric set
 	ms := e.NewMetricSet("NagiosServiceCheckSample",
 		metric.Attribute{Key: "displayName", Value: sc.Name},
 		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},
 	)
 
+	// Add user-defined labels to the metric set
 	for key, value := range sc.Labels {
 		err := ms.SetMetric(key, value, metric.ATTRIBUTE)
 		if err != nil {
@@ -107,6 +114,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 		}
 	}
 
+	// Add each metric to the metric set
 	for _, metric := range []struct {
 		MetricName  string
 		MetricValue interface{}
@@ -145,46 +153,20 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	}
 }
 
-func run_command(args []string) (string, int, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
-
-	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
-
-	var out bytes.Buffer
-	cmd.Stdout = &out
-
-	err := cmd.Start()
-	if err != nil {
-		return "", 0, err
-	}
-
-	err = cmd.Wait()
-	exitCode := 0
-	if err != nil {
-		exitCode = -1
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			if status, ok := exitErr.Sys().(syscall.WaitStatus); ok {
-				exitCode = status.ExitStatus()
-			}
-		}
-	}
-
-	return out.String(), exitCode, nil
-}
-
 func runCommand(name string, args ...string) (stdout string, stderr string, exitCode int) {
+	// Create the command and buffers to save the stdout and stderr
 	var outbuf, errbuf bytes.Buffer
 	cmd := exec.Command(name, args...)
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
 
+	// Run the command
 	err := cmd.Run()
 	stdout = outbuf.String()
 	stderr = errbuf.String()
 
 	if err != nil {
-		// try to get the exit code
+		// Try to get the exit code
 		if exitError, ok := err.(*exec.ExitError); ok {
 			ws := exitError.Sys().(syscall.WaitStatus)
 			exitCode = ws.ExitStatus()
