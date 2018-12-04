@@ -46,7 +46,7 @@ func Test_collectServiceCheck(t *testing.T) {
 		Labels:  map[string]string{"testkey": "testval"},
 	}
 
-	expected_metrics := map[string]interface{}{
+	expectedMetrics := map[string]interface{}{
 		"serviceCheck.name":    "testname",
 		"serviceCheck.status":  float64(0),
 		"serviceCheck.message": "testout\n",
@@ -63,7 +63,7 @@ func Test_collectServiceCheck(t *testing.T) {
 	e, _ := i.Entity("testname", "serviceCheck")
 	metrics := e.Metrics[0].Metrics
 
-	assert.Equal(t, expected_metrics, metrics)
+	assert.Equal(t, expectedMetrics, metrics)
 }
 
 func Test_collectServiceCheck_InvalidNameError(t *testing.T) {
