@@ -1,0 +1,5 @@
+service_checks:
+  - name: test
+    nonexistent: fake
+    labels:
+      env: testenv

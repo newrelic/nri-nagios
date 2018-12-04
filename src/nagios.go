@@ -81,7 +81,7 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 
 	// Parse the file into a serviceCheckConfig struct
 	var conf serviceCheckConfig
-	err = yaml.Unmarshal(yamlFile, &conf)
+	err = yaml.UnmarshalStrict(yamlFile, &conf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse config file: %s", err.Error())
 	}
@@ -90,6 +90,16 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 }
 
 func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
+	if sc.Name == "" {
+		log.Error("All service checks require a name field")
+		return
+	}
+
+	if len(sc.Command) == 0 {
+		log.Error("All service checks require a command")
+		return
+	}
+
 	// Create the entity
 	e, err := i.Entity(sc.Name, "serviceCheck")
 	if err != nil {
