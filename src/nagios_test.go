@@ -81,6 +81,21 @@ func Test_collectServiceCheck_InvalidNameError(t *testing.T) {
 	assert.Equal(t, 0, len(e.Metrics))
 }
 
+func Test_collectServiceCheck_NoNameError(t *testing.T) {
+	i, _ := integration.New("test", "test")
+	sc := serviceCheck{
+		Name:    "",
+		Command: []string{"echo", "testout"},
+		Labels:  map[string]string{"testkey": "testval"},
+	}
+
+	collectServiceCheck(sc, i)
+
+	e, _ := i.Entity("testname", "serviceCheck")
+
+	assert.Equal(t, 0, len(e.Metrics))
+}
+
 func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 	i, _ := integration.New("test", "test")
 	sc := serviceCheck{
@@ -96,9 +111,16 @@ func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 	assert.Equal(t, 0, len(e.Metrics))
 }
 
-func Test_runCommand_InvalidCommand(t *testing.T) {
+func Test_runCommand_InvalidCommandError(t *testing.T) {
 	stdout, stderr, exit := runCommand("jdijfs")
 	assert.Equal(t, -1, exit)
+	assert.Equal(t, "", stdout)
+	assert.NotEmpty(t, stderr)
+}
+
+func Test_runCommand_InvalidArgumentsError(t *testing.T) {
+	stdout, stderr, exit := runCommand("ls", "-2")
+	assert.Equal(t, 1, exit)
 	assert.Equal(t, "", stdout)
 	assert.NotEmpty(t, stderr)
 }

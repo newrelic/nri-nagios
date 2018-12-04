@@ -90,11 +90,6 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 }
 
 func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
-	if sc.Name == "" {
-		log.Error("All service checks require a name field")
-		return
-	}
-
 	if len(sc.Command) == 0 {
 		log.Error("All service checks require a command")
 		return
@@ -103,7 +98,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	// Create the entity
 	e, err := i.Entity(sc.Name, "serviceCheck")
 	if err != nil {
-		log.Error("Failed to get entity for service check %s: %s", sc.Name, err.Error())
+		log.Error("Must provide a name for each service check: %s", err.Error())
 		return
 	}
 
