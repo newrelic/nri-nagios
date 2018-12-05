@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/newrelic/infra-integrations-sdk/integration"
@@ -33,6 +34,15 @@ func Test_parseConfigFile_FileNotExistError(t *testing.T) {
 
 func Test_parseConfigFile_InvalidYamlError(t *testing.T) {
 	config, err := parseConfigFile("./test/invalid.yaml")
+	os.Chmod("./test/invalid.yaml", 0600)
+
+	assert.Error(t, err)
+	assert.Nil(t, config)
+}
+
+func Test_parseConfigFile_UnrestrictiveError(t *testing.T) {
+	config, err := parseConfigFile("./test/invalid.yaml")
+	os.Chmod("./test/invalid.yaml", 0777)
 
 	assert.Error(t, err)
 	assert.Nil(t, config)
@@ -118,9 +128,9 @@ func Test_runCommand_InvalidCommandError(t *testing.T) {
 	assert.NotEmpty(t, stderr)
 }
 
-func Test_runCommand_InvalidArgumentsError(t *testing.T) {
-	stdout, stderr, exit := runCommand("ls", "-2")
-	assert.Equal(t, 1, exit)
-	assert.Equal(t, "", stdout)
-	assert.NotEmpty(t, stderr)
+func Test_runCommand_returns1(t *testing.T) {
+	stdout, stderr, exit := runCommand("/bin/sh", "test/returns2.sh")
+	assert.Equal(t, 2, exit)
+	assert.Empty(t, stdout)
+	assert.Empty(t, stderr)
 }
