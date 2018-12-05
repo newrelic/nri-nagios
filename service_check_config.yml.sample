@@ -1,0 +1,8 @@
+service_checks:
+  - name: check_users
+    command: ["/usr/local/nagios/libexec/check_users", "-w", "5", "-c", "10"]
+    labels:
+      env: staging
+      key1: val1
+  - name: check_yum
+    command: ["/usr/local/nagios/libexec/check_yum"]
