@@ -6,16 +6,15 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"syscall"
 
-	"github.com/newrelic/infra-integrations-sdk/data/metric"
-
-	"gopkg.in/yaml.v2"
-
 	sdkArgs "github.com/newrelic/infra-integrations-sdk/args"
+	"github.com/newrelic/infra-integrations-sdk/data/metric"
 	"github.com/newrelic/infra-integrations-sdk/integration"
 	"github.com/newrelic/infra-integrations-sdk/log"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -73,6 +72,15 @@ func main() {
 }
 
 func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
+	// If on linux or macos, check that the service file is appropriately permissioned
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		if fileInfo, _ := os.Stat(configFile); fileInfo != nil {
+			if fileInfo.Mode().Perm() > 0600 {
+				return nil, fmt.Errorf("service checks file permissions are not restrictive enough. Required file permissions are 0600. See documentation for details")
+			}
+		}
+	}
+
 	// Read the file into a string
 	yamlFile, err := ioutil.ReadFile(configFile)
 	if err != nil {
@@ -151,8 +159,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 			metric.ATTRIBUTE,
 		},
 	} {
-		err := ms.SetMetric(metric.MetricName, metric.MetricValue, metric.MetricType)
-		if err != nil {
+		if err := ms.SetMetric(metric.MetricName, metric.MetricValue, metric.MetricType); err != nil {
 			log.Error("Failed to set metric %s for %s: %s", metric.MetricName, sc.Name, err.Error())
 		}
 	}
@@ -170,6 +177,7 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 	stdout = outbuf.String()
 	stderr = errbuf.String()
 
+	// Retrieve the exit code
 	if err != nil {
 		// Try to get the exit code
 		if exitError, ok := err.(*exec.ExitError); ok {
@@ -177,16 +185,13 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 			exitCode = ws.ExitStatus()
 		} else {
 			// This will happen (in OSX) if `name` is not available in $PATH,
-			// in this situation, exit code could not be gotten, and stderr will likely
-			// be an empty string, so we use the default fail code, and format err
-			// to string and set to stderr
 			exitCode = -1
 			if stderr == "" {
 				stderr = err.Error()
 			}
 		}
 	} else {
-		// success, exitCode should be 0 if go is ok
+		// success, exit code should be zero
 		ws := cmd.ProcessState.Sys().(syscall.WaitStatus)
 		exitCode = ws.ExitStatus()
 	}
