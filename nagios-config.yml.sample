@@ -1,13 +1,8 @@
-# Copy this file into the following folder:
-#    Linux: /etc/newrelic-infra/integrations.d
-#    Windows: C:\Program Files\New Relic\newrelic-infra\integrations.d
-#
-# For a complete description of the Configuration File Specification, please
-# refer to the Integrations SDK documentation:
-# https://docs.newrelic.com/docs/integrations/integrations-sdk/file-specifications
-
 integration_name: com.newrelic.nagios
 
 instances:
   - name: nagios
-    command: all_data
+    command: metrics
+    arguments:
+      # The absolute path to the service checks config file
+      service_checks_config: /etc/newrelic-infra/integrations.d/service_checks.yml

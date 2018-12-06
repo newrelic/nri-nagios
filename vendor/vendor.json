@@ -1,0 +1,81 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "dvabztWVQX8f6oMLRyv4dLH+TGY=",
+			"origin": "github.com/stretchr/testify/vendor/github.com/davecgh/go-spew/spew",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": "f35b8ab0b5a2cef36673838d662e249dd9c94686",
+			"revisionTime": "2018-05-06T18:05:49Z"
+		},
+		{
+			"checksumSHA1": "vaf5eT+PJQb1GZqxU2zphFZ6DW0=",
+			"path": "github.com/newrelic/infra-integrations-sdk/args",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "MIpXLeV0eMQexJB0pEX/SyzFTLM=",
+			"path": "github.com/newrelic/infra-integrations-sdk/data/event",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "gw311uebO1hV6mAX/l33+Dz7RxI=",
+			"path": "github.com/newrelic/infra-integrations-sdk/data/inventory",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "EUbzb1pkn0XNGmGgNG25/bCoXNo=",
+			"path": "github.com/newrelic/infra-integrations-sdk/data/metric",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "PchJxGxeh/WwF3UzjNh8SSunnAw=",
+			"path": "github.com/newrelic/infra-integrations-sdk/integration",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "g8j6O3dk02FvG2PJAIA1S3ldIVk=",
+			"path": "github.com/newrelic/infra-integrations-sdk/log",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "8AZ8+K3OtWN0mMTrl/jhgGOpuuY=",
+			"path": "github.com/newrelic/infra-integrations-sdk/persist",
+			"revision": "87191ef2538927d23bac6ffccc8ae395eb361901",
+			"revisionTime": "2018-10-02T07:53:39Z"
+		},
+		{
+			"checksumSHA1": "MNQJEuxGsqFhmnnSG5n2xM69Lcw=",
+			"path": "github.com/pkg/errors",
+			"revision": "c059e472caf75dbe73903f6521a20abac245b17f",
+			"revisionTime": "2018-09-11T06:21:13Z"
+		},
+		{
+			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
+			"origin": "github.com/stretchr/testify/vendor/github.com/pmezard/go-difflib/difflib",
+			"path": "github.com/pmezard/go-difflib/difflib",
+			"revision": "f35b8ab0b5a2cef36673838d662e249dd9c94686",
+			"revisionTime": "2018-05-06T18:05:49Z"
+		},
+		{
+			"checksumSHA1": "oZq21ofaXa5OMcpehkD32Bv/C9s=",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": "f35b8ab0b5a2cef36673838d662e249dd9c94686",
+			"revisionTime": "2018-05-06T18:05:49Z"
+		},
+		{
+			"checksumSHA1": "3qx1s/G7sJ0wjWpW3bhLWuCFwTw=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
+			"revisionTime": "2018-03-28T19:50:20Z"
+		}
+	],
+	"rootPath": "github.com/newrelic/nri-nagios"
+}
