@@ -1,4 +1,4 @@
-# New Relic Infrastructure Integration for nagios
+# New Relic Infrastructure Integration for Nagios
 
 Reports the output of service checks 
 
