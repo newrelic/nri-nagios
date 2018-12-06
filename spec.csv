@@ -1,0 +1,6 @@
+integration,metric_name,metric_type,metric_enabled,metric_description
+Nagios,servicecheck.name,Attribute,true,A descriptive name of the service check
+Nagios,servicecheck.status,Gauge,true,"The return code of the service check (0, 1, 2, 3)"
+Nagios,servicecheck.message,Attribute,true,The stdout output of the service check
+Nagios,servicecheck.error,Attribute,true,The stderr output of the service check
+Nagios,servicecheck.command,Attribute,true,The command used to run the service check
