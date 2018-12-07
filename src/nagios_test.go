@@ -19,6 +19,7 @@ func Test_parseConfigFile(t *testing.T) {
 		},
 	}
 
+	os.Chmod("./test/testconfig.yaml", 0600)
 	config, err := parseConfigFile("./test/testconfig.yaml")
 
 	assert.Nil(t, err)
