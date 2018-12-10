@@ -1,4 +1,7 @@
 NATIVEOS	 := $(shell go version | awk -F '[ /]' '{print $$4}')
+WORKDIR      := $(shell pwd)
+TARGET       := target
+TARGET_DIR    = $(WORKDIR)/$(TARGET)
 NATIVEARCH	 := $(shell go version | awk -F '[ /]' '{print $$5}')
 INTEGRATION  := nagios
 BINARY_NAME   = nr-$(INTEGRATION)
