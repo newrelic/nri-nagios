@@ -13,4 +13,4 @@ service_checks:
       env: staging
       key1: val1
   - name: check_yum
-    command: ["/usr/local/nagios/libexec/check_yum"]
+    command: ["/usr/local/nagios/libexec/check_ssh", "localhost"]
