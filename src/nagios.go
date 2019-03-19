@@ -19,7 +19,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "0.1.3"
+	integrationVersion = "1.0.1"
 )
 
 type argumentList struct {
