@@ -19,7 +19,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "0.1.3"
+	integrationVersion = "0.1.4"
 )
 
 type argumentList struct {
@@ -185,6 +185,7 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 			exitCode = ws.ExitStatus()
 		} else {
 			// This will happen (in OSX) if `name` is not available in $PATH,
+			log.Error("Failed to execute script `%s`: %s", name, err.Error())
 			exitCode = -1
 			if stderr == "" {
 				stderr = err.Error()
