@@ -3,6 +3,8 @@ package integration
 import (
 	"testing"
 
+	"github.com/newrelic/infra-integrations-sdk/data/metric"
+
 	"strconv"
 	"sync"
 
@@ -14,15 +16,79 @@ import (
 )
 
 func TestNewEntity(t *testing.T) {
-	e, err := newEntity("name", "type", persist.NewInMemoryStore())
+	e, err := newEntity("name", "type", persist.NewInMemoryStore(), false)
 
 	assert.NoError(t, err)
 	assert.Equal(t, "name", e.Metadata.Name)
 	assert.Equal(t, "type", e.Metadata.Namespace)
+	assert.False(t, e.AddHostname)
+	assert.Empty(t, e.Metadata.IDAttrs)
+}
+
+func TestNewEntityWithIdentifierAttributes(t *testing.T) {
+	attr1 := NewIDAttribute("env", "prod")
+	attr2 := NewIDAttribute("srv", "auth")
+	e, err := newEntity(
+		"name",
+		"type",
+		persist.NewInMemoryStore(),
+		true,
+		attr1,
+		attr2,
+	)
+
+	assert.NoError(t, err)
+	assert.True(t, e.AddHostname)
+	assert.Len(t, e.Metadata.IDAttrs, 2)
+	assert.Equal(t, e.Metadata.IDAttrs[0], attr1)
+	assert.Equal(t, e.Metadata.IDAttrs[1], attr2)
+}
+
+func TestNewEntityWithOneIdentifierAttribute(t *testing.T) {
+	attr1 := NewIDAttribute("env", "prod")
+	e, err := newEntity(
+		"name",
+		"type",
+		persist.NewInMemoryStore(),
+		true,
+		attr1,
+	)
+
+	assert.NoError(t, err)
+	assert.True(t, e.AddHostname)
+	assert.Len(t, e.Metadata.IDAttrs, 1)
+	assert.Equal(t, e.Metadata.IDAttrs[0], attr1)
+}
+
+func TestEntity_AddAttributes(t *testing.T) {
+	idAttr := NewIDAttribute("env", "prod")
+	e, err := newEntity(
+		"name",
+		"type",
+		persist.NewInMemoryStore(),
+		false,
+		idAttr,
+	)
+	assert.NoError(t, err)
+
+	e.AddAttributes(metric.Attr("key1", "val1"), metric.Attr("key2", "val2"))
+
+	assert.Len(t, e.customAttributes, 2, "attributes should have been added to the entity")
+
+	ms := e.NewMetricSet("event-type")
+
+	assert.Equal(t, "val1", ms.Metrics["key1"])
+	assert.Equal(t, "val2", ms.Metrics["key2"])
+}
+
+func TestEntitiesRequireNameAndType(t *testing.T) {
+	_, err := newEntity("", "", nil, false)
+
+	assert.Error(t, err)
 }
 
 func TestAddNotificationEvent(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,7 +104,7 @@ func TestAddNotificationEvent(t *testing.T) {
 }
 
 func TestAddNotificationWithEmptySummaryFails(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +116,7 @@ func TestAddNotificationWithEmptySummaryFails(t *testing.T) {
 }
 
 func TestAddEvent_Entity(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +136,7 @@ func TestAddEvent_Entity(t *testing.T) {
 }
 
 func TestAddEvent(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	assert.NoError(t, err)
 
 	err = en.AddEvent(event.New("TestSummary", ""))
@@ -83,7 +149,7 @@ func TestAddEvent(t *testing.T) {
 }
 
 func TestAddEvent_Entity_EmptySummary_Error(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	assert.NoError(t, err)
 
 	err = en.AddEvent(event.New("", "TestCategory"))
@@ -93,7 +159,7 @@ func TestAddEvent_Entity_EmptySummary_Error(t *testing.T) {
 }
 
 func TestEntity_AddInventoryConcurrent(t *testing.T) {
-	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore())
+	en, err := newEntity("Entity1", "Type1", persist.NewInMemoryStore(), false)
 	assert.NoError(t, err)
 
 	itemsAmount := 100
@@ -111,7 +177,7 @@ func TestEntity_AddInventoryConcurrent(t *testing.T) {
 }
 
 func TestEntity_DefaultEntityIsNotSerialized(t *testing.T) {
-	e := newLocalEntity(persist.NewInMemoryStore())
+	e := newLocalEntity(persist.NewInMemoryStore(), false)
 	j, err := json.Marshal(e)
 
 	assert.NoError(t, err)
@@ -119,8 +185,43 @@ func TestEntity_DefaultEntityIsNotSerialized(t *testing.T) {
 }
 
 func TestEntity_IsDefaultEntity(t *testing.T) {
-	e := newLocalEntity(persist.NewInMemoryStore())
+	e := newLocalEntity(persist.NewInMemoryStore(), false)
 
 	assert.Empty(t, e.Metadata, "default entity should have no identifier")
 	assert.True(t, e.isLocalEntity())
+}
+
+func TestEntity_Key(t *testing.T) {
+	e, err := newEntity("entity", "ns", persist.NewInMemoryStore(), false)
+	assert.NoError(t, err)
+
+	k, err := e.Key()
+	assert.NoError(t, err)
+	assert.Equal(t, "ns:entity", k.String())
+}
+
+func TestEntity_Key_WithIDAttrs(t *testing.T) {
+	attr1 := NewIDAttribute("env", "prod")
+	attr2 := NewIDAttribute("srv", "auth")
+	e, err := newEntity("entity", "ns", persist.NewInMemoryStore(), false, attr1, attr2)
+	assert.NoError(t, err)
+
+	k, err := e.Key()
+	assert.NoError(t, err)
+	assert.Equal(t, "ns:entity:env=prod:srv=auth", k.String())
+}
+
+func TestEntity_SameAs(t *testing.T) {
+	attr := NewIDAttribute("env", "prod")
+	e1, err := newEntity("entity", "ns", persist.NewInMemoryStore(), false, attr)
+	assert.NoError(t, err)
+
+	e2, err := newEntity("entity", "ns", persist.NewInMemoryStore(), false, attr)
+	assert.NoError(t, err)
+
+	e3, err := newEntity("entity", "ns", persist.NewInMemoryStore(), false)
+	assert.NoError(t, err)
+
+	assert.True(t, e1.SameAs(e2))
+	assert.False(t, e1.SameAs(e3))
 }

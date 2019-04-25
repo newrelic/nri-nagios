@@ -104,7 +104,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	}
 
 	// Create the entity
-  hostIDAttr := integration.NewIDAttribute("executing_host", "localhost") // This will be resolved to the hostname by the agent
+	hostIDAttr := integration.NewIDAttribute("executing_host", "localhost") // This will be resolved to the hostname by the agent
 	e, err := i.Entity(sc.Name, "serviceCheck", hostIDAttr)
 	if err != nil {
 		log.Error("Must provide a name for each service check: %s", err.Error())
