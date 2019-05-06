@@ -71,7 +71,8 @@ func Test_collectServiceCheck(t *testing.T) {
 
 	collectServiceCheck(sc, i)
 
-	e, _ := i.Entity("testname", "serviceCheck")
+	id := integration.NewIDAttribute("executing_host", "localhost")
+	e, _ := i.Entity("testname", "serviceCheck", id)
 	metrics := e.Metrics[0].Metrics
 
 	assert.Equal(t, expectedMetrics, metrics)

@@ -19,7 +19,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "1.0.1"
+	integrationVersion = "2.0.0"
 )
 
 type argumentList struct {
@@ -104,7 +104,8 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	}
 
 	// Create the entity
-	e, err := i.Entity(sc.Name, "serviceCheck")
+	hostIDAttr := integration.NewIDAttribute("executing_host", "localhost") // This will be resolved to the hostname by the agent
+	e, err := i.Entity(sc.Name, "serviceCheck", hostIDAttr)
 	if err != nil {
 		log.Error("Must provide a name for each service check: %s", err.Error())
 		return
