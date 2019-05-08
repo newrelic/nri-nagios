@@ -114,8 +114,15 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	// Run the command for the service check
 	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
 
+	// Set the hostname
+	serverName, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+
 	// Create a metric set
 	ms := e.NewMetricSet("NagiosServiceCheckSample",
+		metric.Attribute{Key: "serverName", Value: serverName},
 		metric.Attribute{Key: "displayName", Value: sc.Name},
 		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},
 	)
