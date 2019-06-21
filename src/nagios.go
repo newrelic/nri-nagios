@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-  "regexp"
+	"regexp"
 	"runtime"
-  "strconv"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -34,10 +34,10 @@ type serviceCheckConfig struct {
 }
 
 type serviceCheck struct {
-	Name    string            `yaml:"name"`
-	Command []string          `yaml:"command"`
-	Labels  map[string]string `yaml:"labels"`
-  ParseOutput bool `yaml:"parse_output"`
+	Name        string            `yaml:"name"`
+	Command     []string          `yaml:"command"`
+	Labels      map[string]string `yaml:"labels"`
+	ParseOutput bool              `yaml:"parse_output"`
 }
 
 func main() {
@@ -123,7 +123,6 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},
 	)
 
-
 	// Add user-defined labels to the metric set
 	for key, value := range sc.Labels {
 		err := ms.SetMetric(key, value, metric.ATTRIBUTE)
@@ -132,23 +131,22 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 		}
 	}
 
-  if sc.ParseOutput {
-    serviceOutput, longServiceOutput, parsedMetrics := parseOutput(stdout)
-    for key, value := range parsedMetrics {
-      if err := ms.SetMetric(key, value, metric.GAUGE); err != nil {
-        log.Error("Failed to set metric %s for %s: %s", key, value, err.Error())
-      }
-    }
+	if sc.ParseOutput {
+		serviceOutput, longServiceOutput, parsedMetrics := parseOutput(stdout)
+		for key, value := range parsedMetrics {
+			if err := ms.SetMetric(key, value, metric.GAUGE); err != nil {
+				log.Error("Failed to set metric %s for %s: %s", key, value, err.Error())
+			}
+		}
 
-    if err := ms.SetMetric("serviceCheck.serviceOutput", serviceOutput, metric.ATTRIBUTE); err != nil {
-      log.Error("Failed to set metric %s for %s: %s", "serviceCheck.serviceOutput", sc.Name, err.Error())
-    }
+		if err := ms.SetMetric("serviceCheck.serviceOutput", serviceOutput, metric.ATTRIBUTE); err != nil {
+			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.serviceOutput", sc.Name, err.Error())
+		}
 
-    if err := ms.SetMetric("serviceCheck.longServiceOutput", longServiceOutput, metric.ATTRIBUTE); err != nil {
-      log.Error("Failed to set metric %s for %s: %s", "serviceCheck.longServiceOutput", sc.Name, err.Error())
-    }
-  }
-
+		if err := ms.SetMetric("serviceCheck.longServiceOutput", longServiceOutput, metric.ATTRIBUTE); err != nil {
+			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.longServiceOutput", sc.Name, err.Error())
+		}
+	}
 
 	// Add each metric to the metric set
 	for _, metric := range []struct {
@@ -225,31 +223,30 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 }
 
 func parseOutput(output string) (string, string, map[string]float64) {
-  re := regexp.MustCompile(`^(?P<serviceOutput>[^|]+)(?:\|(?P<metrics1>[^\n]*)\n?)?(?P<longServiceOutput>[^|]*)?(?:\|(?P<metrics2>[^|]*))?$`)
-  match := re.FindStringSubmatch(output)
-  result := make(map[string]string)
-  for i, name := range re.SubexpNames() {
-    if i != 0 && name != "" {
-      result[name] = match[i]
-    }
-  } 
+	re := regexp.MustCompile(`^(?P<serviceOutput>[^|]+)(?:\|(?P<metrics1>[^\n]*)\n?)?(?P<longServiceOutput>[^|]*)?(?:\|(?P<metrics2>[^|]*))?$`)
+	match := re.FindStringSubmatch(output)
+	result := make(map[string]string)
+	for i, name := range re.SubexpNames() {
+		if i != 0 && name != "" {
+			result[name] = match[i]
+		}
+	}
 
-  rawMetrics := result["metrics1"] + "\n" + result["metrics2"]
-  parsedMetrics := parseMetrics(rawMetrics)
+	rawMetrics := result["metrics1"] + "\n" + result["metrics2"]
+	parsedMetrics := parseMetrics(rawMetrics)
 
-  return result["serviceOutput"], result["longServiceOutput"], parsedMetrics
+	return result["serviceOutput"], result["longServiceOutput"], parsedMetrics
 }
 
 func parseMetrics(rawMetrics string) map[string]float64 {
-  re := regexp.MustCompile(`(?P<key>[^\s;,]+)=(?P<val>[\d\.]+)`)
+	re := regexp.MustCompile(`(?P<key>[^\s;,]+)=(?P<val>[\d\.]+)`)
 	matches := re.FindAllStringSubmatch(rawMetrics, -1)
-  results := map[string]float64{}
+	results := map[string]float64{}
 	for _, match := range matches {
-    value, _ := strconv.ParseFloat(match[2], 64)
-    key := match[1]
-    results[key] = value
+		value, _ := strconv.ParseFloat(match[2], 64)
+		key := match[1]
+		results[key] = value
 	}
 
-  return results
+	return results
 }
-
