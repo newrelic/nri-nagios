@@ -149,7 +149,7 @@ func Test_parseOutput1(t *testing.T) {
 	expectedLongServiceOutput := ""
 	expectedServicePerfData := map[string]float64{}
 
-  serviceOutput, longServiceOutput, servicePerfData := parseOutput(case1)
+	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case1)
 
 	assert.Equal(t, expectedServiceOutput, serviceOutput)
 	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
@@ -166,7 +166,7 @@ func Test_parseOutput2(t *testing.T) {
 		"/root": 2643.0,
 	}
 
-  serviceOutput, longServiceOutput, servicePerfData := parseOutput(case2)
+	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case2)
 
 	assert.Equal(t, expectedServiceOutput, serviceOutput)
 	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
@@ -185,7 +185,7 @@ func Test_parseOutput3(t *testing.T) {
 		"/home": 69357.0,
 	}
 
-  serviceOutput, longServiceOutput, servicePerfData := parseOutput(case3)
+	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case3)
 
 	assert.Equal(t, expectedServiceOutput, serviceOutput)
 	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
@@ -203,7 +203,7 @@ func Test_parseOutput4(t *testing.T) {
 		"test2": 3452.0,
 	}
 
-  serviceOutput, longServiceOutput, servicePerfData := parseOutput(case4)
+	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case4)
 
 	assert.Equal(t, expectedServiceOutput, serviceOutput)
 	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
