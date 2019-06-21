@@ -136,3 +136,76 @@ func Test_runCommand_returns1(t *testing.T) {
 	assert.Empty(t, stdout)
 	assert.Empty(t, stderr)
 }
+
+func Test_parseOutput1(t *testing.T) {
+  case1 := `DISK OK - free space: / 3326 MB (56%);`
+
+  expectedServiceOutput := case1
+  expectedLongServiceOutput := ""
+  expectedServicePerfData := map[string]float64{}
+
+  serviceOutput, longServiceOutput, servicePerfData, err := parseOutput(case1)
+
+  assert.Nil(t, err)
+  assert.Equal(t, expectedServiceOutput, serviceOutput)
+  assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
+  assert.Equal(t, expectedServicePerfData, servicePerfData)
+
+}
+
+func Test_parseOutput2(t *testing.T) {
+  case2 := `DISK OK - free space: /root 3326 MB (56%); | /root=2643MB;5948;5958;0;5968`
+  
+  expectedServiceOutput := "DISK OK - free space: /root 3326 MB (56%); "
+  expectedLongServiceOutput := ""
+  expectedServicePerfData := map[string]float64{
+		"/root": 2643.0,
+	}
+
+  serviceOutput, longServiceOutput, servicePerfData, err := parseOutput(case2)
+
+  assert.Nil(t, err)
+  assert.Equal(t, expectedServiceOutput, serviceOutput)
+  assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
+  assert.Equal(t, expectedServicePerfData, servicePerfData)
+
+}
+
+func Test_parseOutput3(t *testing.T) {
+  case3 := "DISK OK - free space: /root 3326 MB (56%); | /=2643MB;5948;5958;0;5968\n/ 15272 MB (77%);\n/boot 68 MB (69%); | /boot=68MB;88;93;0;98\n/home=69357MB;253404;253409;0;253414"
+
+  expectedServiceOutput := "DISK OK - free space: /root 3326 MB (56%); "
+  expectedLongServiceOutput := "/ 15272 MB (77%);\n/boot 68 MB (69%); "
+  expectedServicePerfData := map[string]float64{
+    "/": 2643.0,
+		"/boot": 68.0,
+		"/home": 69357.0,
+	}
+
+  serviceOutput, longServiceOutput, servicePerfData, err := parseOutput(case3)
+
+  assert.Nil(t, err)
+  assert.Equal(t, expectedServiceOutput, serviceOutput)
+  assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
+  assert.Equal(t, expectedServicePerfData, servicePerfData)
+
+}
+
+func Test_parseOutput4(t *testing.T) {
+  case4 := `DISK OK - free space: /root 3326 MB (56%); | /root=2643MB test2=3452.0`
+  
+  expectedServiceOutput := "DISK OK - free space: /root 3326 MB (56%); "
+  expectedLongServiceOutput := ""
+  expectedServicePerfData := map[string]float64{
+		"/root": 2643.0,
+		"test2": 3452.0,
+	}
+
+  serviceOutput, longServiceOutput, servicePerfData, err := parseOutput(case4)
+
+  assert.Nil(t, err)
+  assert.Equal(t, expectedServiceOutput, serviceOutput)
+  assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
+  assert.Equal(t, expectedServicePerfData, servicePerfData)
+
+}
