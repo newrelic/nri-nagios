@@ -1,0 +1,11 @@
+name: com.newrelic.nagios
+description: Reports status and metrics for nagios service
+protocol_version: 2
+os: windows
+
+commands:
+  metrics:
+    command:
+      - .\bin\nr-nagios.exe
+      - --metrics
+    interval: 15
