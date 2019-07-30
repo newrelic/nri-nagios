@@ -21,7 +21,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "2.1.0"
+	integrationVersion = "2.1.1"
 )
 
 type argumentList struct {
@@ -106,8 +106,15 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 		return
 	}
 
+	// Set the hostname
+	serverName, err := os.Hostname()
+	if err != nil {
+		log.Error("Failed to collect the hostname. Setting it to localhost to be set by the agent")
+		serverName = "localhost"
+	}
+
 	// Create the entity
-	hostIDAttr := integration.NewIDAttribute("executing_host", "localhost") // This will be resolved to the hostname by the agent
+	hostIDAttr := integration.NewIDAttribute("executing_host", serverName)
 	e, err := i.Entity(sc.Name, "serviceCheck", hostIDAttr)
 	if err != nil {
 		log.Error("Must provide a name for each service check: %s", err.Error())
@@ -116,12 +123,6 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 
 	// Run the command for the service check
 	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
-
-	// Set the hostname
-	serverName, err := os.Hostname()
-	if err != nil {
-		panic(err)
-	}
 
 	// Create a metric set
 	ms := e.NewMetricSet("NagiosServiceCheckSample",
