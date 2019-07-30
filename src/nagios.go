@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -19,7 +21,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "2.0.0"
+	integrationVersion = "2.1.0"
 )
 
 type argumentList struct {
@@ -32,9 +34,10 @@ type serviceCheckConfig struct {
 }
 
 type serviceCheck struct {
-	Name    string            `yaml:"name"`
-	Command []string          `yaml:"command"`
-	Labels  map[string]string `yaml:"labels"`
+	Name        string            `yaml:"name"`
+	Command     []string          `yaml:"command"`
+	Labels      map[string]string `yaml:"labels"`
+	ParseOutput bool              `yaml:"parse_output"`
 }
 
 func main() {
@@ -135,6 +138,23 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 		}
 	}
 
+	if sc.ParseOutput {
+		serviceOutput, longServiceOutput, parsedMetrics := parseOutput(stdout)
+		for key, value := range parsedMetrics {
+			if err := ms.SetMetric(key, value, metric.GAUGE); err != nil {
+				log.Error("Failed to set metric %s for %s: %s", key, value, err.Error())
+			}
+		}
+
+		if err := ms.SetMetric("serviceCheck.serviceOutput", serviceOutput, metric.ATTRIBUTE); err != nil {
+			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.serviceOutput", sc.Name, err.Error())
+		}
+
+		if err := ms.SetMetric("serviceCheck.longServiceOutput", longServiceOutput, metric.ATTRIBUTE); err != nil {
+			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.longServiceOutput", sc.Name, err.Error())
+		}
+	}
+
 	// Add each metric to the metric set
 	for _, metric := range []struct {
 		MetricName  string
@@ -171,6 +191,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 			log.Error("Failed to set metric %s for %s: %s", metric.MetricName, sc.Name, err.Error())
 		}
 	}
+
 }
 
 func runCommand(name string, args ...string) (stdout string, stderr string, exitCode int) {
@@ -206,4 +227,33 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 	}
 
 	return
+}
+
+func parseOutput(output string) (string, string, map[string]float64) {
+	re := regexp.MustCompile(`^(?P<serviceOutput>[^|]+)(?:\|(?P<metrics1>[^\n]*)\n?)?(?P<longServiceOutput>[^|]*)?(?:\|(?P<metrics2>[^|]*))?$`)
+	match := re.FindStringSubmatch(output)
+	result := make(map[string]string)
+	for i, name := range re.SubexpNames() {
+		if i != 0 && name != "" {
+			result[name] = match[i]
+		}
+	}
+
+	rawMetrics := result["metrics1"] + "\n" + result["metrics2"]
+	parsedMetrics := parseMetrics(rawMetrics)
+
+	return result["serviceOutput"], result["longServiceOutput"], parsedMetrics
+}
+
+func parseMetrics(rawMetrics string) map[string]float64 {
+	re := regexp.MustCompile(`(?P<key>[^\s;,]+)=(?P<val>[\d\.]+)`)
+	matches := re.FindAllStringSubmatch(rawMetrics, -1)
+	results := map[string]float64{}
+	for _, match := range matches {
+		value, _ := strconv.ParseFloat(match[2], 64)
+		key := match[1]
+		results[key] = value
+	}
+
+	return results
 }

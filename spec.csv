@@ -4,3 +4,5 @@ Nagios,servicecheck.status,Gauge,true,"The return code of the service check (0, 
 Nagios,servicecheck.message,Attribute,true,The stdout output of the service check
 Nagios,servicecheck.error,Attribute,true,The stderr output of the service check
 Nagios,servicecheck.command,Attribute,true,The command used to run the service check
+Nagios,servicecheck.serviceOutput,Attribute,true,The command used to run the service check
+Nagios,servicecheck.longServiceOutput,Attribute,true,The command used to run the service check
