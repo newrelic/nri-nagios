@@ -58,6 +58,10 @@ func Test_collectServiceCheck(t *testing.T) {
 		Labels:      map[string]string{"testkey": "testval"},
 		ParseOutput: false,
 	}
+	serverName, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
 
 	expectedMetrics := map[string]interface{}{
 		"serviceCheck.name":    "testname",
@@ -65,6 +69,7 @@ func Test_collectServiceCheck(t *testing.T) {
 		"serviceCheck.message": "testout\n",
 		"serviceCheck.error":   "",
 		"serviceCheck.command": "echo testout",
+		"serverName":           serverName,
 		"displayName":          "testname",
 		"entityName":           "serviceCheck:testname",
 		"event_type":           "NagiosServiceCheckSample",
@@ -73,7 +78,7 @@ func Test_collectServiceCheck(t *testing.T) {
 
 	collectServiceCheck(sc, i)
 
-	id := integration.NewIDAttribute("executing_host", "localhost")
+	id := integration.NewIDAttribute("executing_host", serverName)
 	e, _ := i.Entity("testname", "serviceCheck", id)
 	metrics := e.Metrics[0].Metrics
 
