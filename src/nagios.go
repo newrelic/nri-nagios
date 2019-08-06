@@ -1,3 +1,4 @@
+//go:generate goversioninfo
 package main
 
 import (
@@ -21,7 +22,7 @@ import (
 
 const (
 	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "2.1.0"
+	integrationVersion = "2.1.1"
 )
 
 type argumentList struct {
