@@ -28,6 +28,7 @@ const (
 type argumentList struct {
 	sdkArgs.DefaultArgumentList
 	ServiceChecksConfig string
+	OutputTableName     string `default:"NagiosServiceCheckSample" help:"NagiosServiceCheckSample"`
 }
 
 type serviceCheckConfig struct {
@@ -64,7 +65,7 @@ func main() {
 	// Run the service checks and store their result
 	if args.HasMetrics() {
 		for _, sc := range conf.ServiceChecks {
-			collectServiceCheck(sc, i)
+			collectServiceCheck(sc, i, args.OutputTableName)
 		}
 	}
 
@@ -101,7 +102,7 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 	return &conf, nil
 }
 
-func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
+func collectServiceCheck(sc serviceCheck, i *integration.Integration, outputTableName string) {
 	if len(sc.Command) == 0 {
 		log.Error("All service checks require a command")
 		return
@@ -126,7 +127,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
 	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
 
 	// Create a metric set
-	ms := e.NewMetricSet("NagiosServiceCheckSample",
+	ms := e.NewMetricSet(outputTableName,
 		metric.Attribute{Key: "serverName", Value: serverName},
 		metric.Attribute{Key: "displayName", Value: sc.Name},
 		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},

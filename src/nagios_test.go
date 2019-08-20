@@ -76,7 +76,7 @@ func Test_collectServiceCheck(t *testing.T) {
 		"testkey":              "testval",
 	}
 
-	collectServiceCheck(sc, i)
+	collectServiceCheck(sc, i, "NagiosServiceCheckSample")
 
 	id := integration.NewIDAttribute("executing_host", serverName)
 	e, _ := i.Entity("testname", "serviceCheck", id)
@@ -94,7 +94,7 @@ func Test_collectServiceCheck_InvalidNameError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	collectServiceCheck(sc, i, "NagiosServiceCheckSample")
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
@@ -110,7 +110,7 @@ func Test_collectServiceCheck_NoNameError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	collectServiceCheck(sc, i, "NagiosServiceCheckSample")
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
@@ -126,7 +126,7 @@ func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	collectServiceCheck(sc, i, "NagiosServiceCheckSample")
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
