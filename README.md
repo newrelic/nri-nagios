@@ -2,6 +2,8 @@
 
 Reports the output of service checks 
 
+See our [documentation web site](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/nagios-monitoring-integration) for more details.
+
 ## Requirements
 
 All desired service checks must be pre-installed and be executable by the root user.
