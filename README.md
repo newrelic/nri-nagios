@@ -12,7 +12,7 @@ All desired service checks must be pre-installed and be executable by the root u
 
 * Download an archive file for the `Nagios` Integration
 * Extract `nagios-definition.yml` and the `bin` directory into `/var/db/newrelic-infra/newrelic-integrations`
-* Add execute permissions for the binary file `nr-nagios` (if required)
+* Add execute permissions for the binary file `nri-nagios` (if required)
 * Extract `nagios-config.yml.sample` and `service_check_config.yml.sample` into `/etc/newrelic-infra/integrations.d`
 
 ## Usage
@@ -37,9 +37,9 @@ Assuming you have the source code, you can build and run the Nagios integration 
 $ make
 ```
 
-* The command above will execute tests for the Nagios integration and build an executable file called `nr-nagios` in the `bin` directory
+* The command above will execute tests for the Nagios integration and build an executable file called `nri-nagios` in the `bin` directory
 ```
-$ ./bin/nr-nagios --help
+$ ./bin/nri-nagios --help
 ```
 
 For managing external dependencies, the [govendor tool](https://github.com/kardianos/govendor) is used. It is required to lock all external dependencies to a specific version (if possible) in the vendor directory.

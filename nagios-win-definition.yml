@@ -6,6 +6,6 @@ os: windows
 commands:
   metrics:
     command:
-      - .\bin\nr-nagios.exe
+      - .\bin\nri-nagios.exe
       - --metrics
     interval: 15

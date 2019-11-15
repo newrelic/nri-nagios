@@ -6,6 +6,6 @@ os: linux
 commands:
   metrics:
     command:
-      - ./bin/nr-nagios
+      - ./bin/nri-nagios
       - --metrics
     interval: 15
