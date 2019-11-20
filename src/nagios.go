@@ -79,8 +79,8 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 	// If on linux or macos, check that the service file is appropriately permissioned
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 		if fileInfo, _ := os.Stat(configFile); fileInfo != nil {
-			if fileInfo.Mode().Perm() > 0600 {
-				return nil, fmt.Errorf("service checks file permissions are not restrictive enough. Required file permissions are 0600. See documentation for details")
+			if fileInfo.Mode().Perm() > 0640 {
+				return nil, fmt.Errorf("service checks file permissions are not restrictive enough. File permissions must be more strict than 0640. See documentation for details")
 			}
 		}
 	}
