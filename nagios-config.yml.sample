@@ -6,3 +6,4 @@ instances:
     arguments:
       # The absolute path to the service checks config file
       service_checks_config: /etc/newrelic-infra/integrations.d/service_checks.yml
+      concurrency: 1
