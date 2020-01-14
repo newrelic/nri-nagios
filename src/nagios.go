@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	sdkArgs "github.com/newrelic/infra-integrations-sdk/args"
@@ -28,6 +29,7 @@ const (
 type argumentList struct {
 	sdkArgs.DefaultArgumentList
 	ServiceChecksConfig string
+	Concurrency         int `default:"1" help:"The maximum number of service checks running concurrently"`
 }
 
 type serviceCheckConfig struct {
@@ -63,9 +65,20 @@ func main() {
 
 	// Run the service checks and store their result
 	if args.HasMetrics() {
-		for _, sc := range conf.ServiceChecks {
-			collectServiceCheck(sc, i)
+		semaphore := make(chan struct{}, args.Concurrency)
+		for i := 0; i < args.Concurrency; i++ {
+			semaphore <- struct{}{}
 		}
+		var wg sync.WaitGroup
+		for _, sc := range conf.ServiceChecks {
+			wg.Add(1)
+			<-semaphore
+			go func(sc serviceCheck) {
+				collectServiceCheck(sc, i, &wg)
+				semaphore <- struct{}{}
+			}(sc)
+		}
+		wg.Wait()
 	}
 
 	// Publish the results
@@ -101,7 +114,9 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 	return &conf, nil
 }
 
-func collectServiceCheck(sc serviceCheck, i *integration.Integration) {
+func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	if len(sc.Command) == 0 {
 		log.Error("All service checks require a command")
 		return

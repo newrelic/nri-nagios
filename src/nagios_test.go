@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/newrelic/infra-integrations-sdk/integration"
@@ -76,7 +77,10 @@ func Test_collectServiceCheck(t *testing.T) {
 		"testkey":              "testval",
 	}
 
-	collectServiceCheck(sc, i)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go collectServiceCheck(sc, i, &wg)
+	wg.Wait()
 
 	id := integration.NewIDAttribute("executing_host", serverName)
 	e, _ := i.Entity("testname", "serviceCheck", id)
@@ -94,7 +98,10 @@ func Test_collectServiceCheck_InvalidNameError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go collectServiceCheck(sc, i, &wg)
+	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
@@ -110,7 +117,10 @@ func Test_collectServiceCheck_NoNameError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go collectServiceCheck(sc, i, &wg)
+	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
@@ -126,7 +136,10 @@ func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 		ParseOutput: false,
 	}
 
-	collectServiceCheck(sc, i)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go collectServiceCheck(sc, i, &wg)
+	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")
 
