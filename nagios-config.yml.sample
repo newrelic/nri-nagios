@@ -6,4 +6,7 @@ instances:
     arguments:
       # The absolute path to the service checks config file
       service_checks_config: /etc/newrelic-infra/integrations.d/service_checks.yml
+      # The number of service checks to run concurrently
       concurrency: 1
+      # The table name to save the service check results into
+      output_table_name: NagiosServiceCheckSample
