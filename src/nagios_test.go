@@ -79,7 +79,7 @@ func Test_collectServiceCheck(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go collectServiceCheck(sc, i, &wg)
+	go collectServiceCheck(sc, i, &wg, "NagiosServiceCheckSample")
 	wg.Wait()
 
 	id := integration.NewIDAttribute("executing_host", serverName)
@@ -100,7 +100,7 @@ func Test_collectServiceCheck_InvalidNameError(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go collectServiceCheck(sc, i, &wg)
+	go collectServiceCheck(sc, i, &wg, "NagiosServiceCheckSample")
 	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")
@@ -119,7 +119,7 @@ func Test_collectServiceCheck_NoNameError(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go collectServiceCheck(sc, i, &wg)
+	go collectServiceCheck(sc, i, &wg, "NagiosServiceCheckSample")
 	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")
@@ -138,7 +138,7 @@ func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go collectServiceCheck(sc, i, &wg)
+	go collectServiceCheck(sc, i, &wg, "NagiosServiceCheckSample")
 	wg.Wait()
 
 	e, _ := i.Entity("testname", "serviceCheck")

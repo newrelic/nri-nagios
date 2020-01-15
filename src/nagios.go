@@ -29,7 +29,8 @@ const (
 type argumentList struct {
 	sdkArgs.DefaultArgumentList
 	ServiceChecksConfig string
-	Concurrency         int `default:"1" help:"The maximum number of service checks running concurrently"`
+	Concurrency         int    `default:"1" help:"The maximum number of service checks running concurrently"`
+	OutputTableName     string `default:"NagiosServiceCheckSample" help:"The sample name where the check should be saved in New Relic"`
 }
 
 type serviceCheckConfig struct {
@@ -74,7 +75,7 @@ func main() {
 			wg.Add(1)
 			<-semaphore
 			go func(sc serviceCheck) {
-				collectServiceCheck(sc, i, &wg)
+				collectServiceCheck(sc, i, &wg, args.OutputTableName)
 				semaphore <- struct{}{}
 			}(sc)
 		}
@@ -114,7 +115,7 @@ func parseConfigFile(configFile string) (*serviceCheckConfig, error) {
 	return &conf, nil
 }
 
-func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.WaitGroup) {
+func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.WaitGroup, outputTableName string) {
 	defer wg.Done()
 
 	if len(sc.Command) == 0 {
@@ -141,7 +142,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.W
 	stdout, stderr, exit := runCommand(sc.Command[0], sc.Command[1:]...)
 
 	// Create a metric set
-	ms := e.NewMetricSet("NagiosServiceCheckSample",
+	ms := e.NewMetricSet(outputTableName,
 		metric.Attribute{Key: "serverName", Value: serverName},
 		metric.Attribute{Key: "displayName", Value: sc.Name},
 		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},
