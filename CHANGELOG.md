@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.5.0 (2020-01-14)
 ### Added
+- `output_table_name` argument
+
+## 2.5.0 (2020-01-14)
+### Added
 - `concurrency` argument
 
 ## 2.4.1 (2019-12-04)
