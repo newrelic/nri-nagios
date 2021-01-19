@@ -146,20 +146,6 @@ func Test_collectServiceCheck_InvalidCommandError(t *testing.T) {
 	assert.Equal(t, 0, len(e.Metrics))
 }
 
-func Test_runCommand_InvalidCommandError(t *testing.T) {
-	stdout, stderr, exit := runCommand("jdijfs")
-	assert.Equal(t, -1, exit)
-	assert.Equal(t, "", stdout)
-	assert.NotEmpty(t, stderr)
-}
-
-func Test_runCommand_returns1(t *testing.T) {
-	stdout, stderr, exit := runCommand("/bin/sh", "test/returns2.sh")
-	assert.Equal(t, 2, exit)
-	assert.Empty(t, stdout)
-	assert.Empty(t, stderr)
-}
-
 func Test_parseOutput1(t *testing.T) {
 	case1 := `DISK OK - free space: / 3326 MB (56%);`
 
