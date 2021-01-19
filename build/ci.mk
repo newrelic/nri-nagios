@@ -10,7 +10,8 @@ ci/debug-container: ci/deps
 			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
 			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
 			-e PRERELEASE=true \
-			-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+			-e GITHUB_TOKEN \
+			-e REPO_FULL_NAME \
 			-e TAG \
 			-e GPG_MAIL \
 			-e GPG_PASSPHRASE \
@@ -46,7 +47,7 @@ ifdef TAG
 	@docker run --rm -t \
 			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
 			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-e INTEGRATION=$(INTEGRATION) \
+			-e INTEGRATION \
 			-e TAG \
 			$(BUILDER_TAG) make release/build
 else
@@ -62,7 +63,8 @@ ifdef TAG
 			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
 			-e INTEGRATION \
 			-e PRERELEASE=true \
-			-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+			-e GITHUB_TOKEN \
+			-e REPO_FULL_NAME \
 			-e TAG \
 			-e GPG_MAIL \
 			-e GPG_PASSPHRASE \

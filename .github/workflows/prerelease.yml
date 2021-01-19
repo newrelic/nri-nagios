@@ -40,7 +40,7 @@ jobs:
     name: Run security checks via snyk
     runs-on: ubuntu-20.04
     env:
-      SNYK_TOKEN: ${{env.COREINT_SNYK_TOKEN}}
+      SNYK_TOKEN: ${{secrets.COREINT_SNYK_TOKEN}}
     steps:
       - uses: actions/checkout@v2
       - name: Login to DockerHub
@@ -89,7 +89,7 @@ jobs:
   prerelease:
     name: Build binary for *Nix/Win, create archives for *Nix/Win, create packages for *Nix, upload all artifacts into GH Release assets
     runs-on: ubuntu-20.04
-    needs: [validate, test-nix, test-windows]
+    needs: [validate, test-nix, snyk, test-windows]
     steps:
       - uses: actions/checkout@v2
       - name: Login to DockerHub
