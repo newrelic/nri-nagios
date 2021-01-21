@@ -22,8 +22,13 @@ import (
 )
 
 const (
-	integrationName    = "com.newrelic.nagios"
-	integrationVersion = "2.6.0"
+	integrationName = "com.newrelic.nagios"
+)
+
+var (
+	integrationVersion = "0.0.0"
+	gitCommit          = ""
+	buildDate          = ""
 )
 
 type argumentList struct {
@@ -31,6 +36,7 @@ type argumentList struct {
 	ServiceChecksConfig string
 	Concurrency         int    `default:"1" help:"The maximum number of service checks running concurrently"`
 	OutputTableName     string `default:"NagiosServiceCheckSample" help:"The sample name where the check should be saved in New Relic"`
+	ShowVersion         bool   `default:"false" help:"Print build information and exit"`
 }
 
 type serviceCheckConfig struct {
@@ -52,6 +58,18 @@ func main() {
 	if err != nil {
 		log.Error("Failed to create integration: %s", err.Error())
 		os.Exit(1)
+	}
+
+	if args.ShowVersion {
+		fmt.Printf(
+			"New Relic %s integration Version: %s, Platform: %s, GoVersion: %s, GitCommit: %s, BuildDate: %s\n",
+			strings.Title(strings.Replace(integrationName, "com.newrelic.", "", 1)),
+			integrationVersion,
+			fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH),
+			runtime.Version(),
+			gitCommit,
+			buildDate)
+		os.Exit(0)
 	}
 
 	// Set logging verbosity
