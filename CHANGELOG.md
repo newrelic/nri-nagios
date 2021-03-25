@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.6.1 (2021-03-25)
+### Changed
+- Release pipeline has been moved to Github Action
+- Code of conduct has been removed
+- Dependency yaml.v2 bumped to remedy a severity
+
 ## 2.6.0 (2020-01-28)
 ### Added
 - `output_table_name` argument

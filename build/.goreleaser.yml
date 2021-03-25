@@ -107,7 +107,7 @@ archives:
       - nri-nagios-win
     name_template: "{{ .ProjectName }}-{{ .Arch }}.{{ .Version }}_dirty"
     files:
-      - nagios-win-config.yml.sample
+      - nagios-config.yml.sample
       - nagios-win-definition.yml
     format: zip
 

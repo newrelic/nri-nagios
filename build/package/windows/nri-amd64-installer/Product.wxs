@@ -89,8 +89,8 @@
         <ComponentGroup Id="PluginConfigsComponent" Directory="PluginConfigsFolder">
             <Component Id="CMP_NRI_$(var.IntegrationName)_CONFIG_YML" Guid="2956c6f3-fc4d-4156-bb4d-74cbe97b282b" Win64="yes">
                 <File Id="FILE_NRI_$(var.IntegrationName)_CONFIG_YML"
-                      Name="$(var.IntegrationName)-win-config.yml.sample"
-                      Source="$(var.BinariesPath)New Relic\newrelic-infra\integrations.d\$(var.IntegrationName)-win-config.yml.sample"
+                      Name="$(var.IntegrationName)-config.yml.sample"
+                      Source="$(var.BinariesPath)New Relic\newrelic-infra\integrations.d\$(var.IntegrationName)-config.yml.sample"
                       KeyPath="yes"/>
             </Component>
         </ComponentGroup>
