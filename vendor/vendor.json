@@ -10,6 +10,18 @@
 			"revisionTime": "2018-05-06T18:05:49Z"
 		},
 		{
+			"checksumSHA1": "jwoPNwN+mUiYFQPjQa/U3Kli7Ak=",
+			"path": "github.com/kr/pretty",
+			"revision": "73f6ac0b30a98e433b289500d779f50c1a6f0712",
+			"revisionTime": "2018-05-06T08:33:45Z"
+		},
+		{
+			"checksumSHA1": "x9dJv+jQhUFN6R6h4fzPjGLvQLg=",
+			"path": "github.com/kr/text",
+			"revision": "e2ffdb16a802fe2bb95e2e35ff34f0e53aeef34f",
+			"revisionTime": "2018-05-06T08:24:08Z"
+		},
+		{
 			"checksumSHA1": "FjcoCfDWhamzYH2bQqKKadbZd48=",
 			"path": "github.com/newrelic/infra-integrations-sdk/args",
 			"revision": "1d56d083ff58c63604755586fe1a65036a064de7",
@@ -77,10 +89,16 @@
 			"revisionTime": "2019-03-04T09:57:49Z"
 		},
 		{
-			"checksumSHA1": "3qx1s/G7sJ0wjWpW3bhLWuCFwTw=",
+			"checksumSHA1": "oKHHyqjlrBJza61n8/dcJhljzIw=",
+			"path": "gopkg.in/check.v1",
+			"revision": "10cb98267c6cb43ea9cd6793f29ff4089c306974",
+			"revisionTime": "2020-11-30T13:44:42Z"
+		},
+		{
+			"checksumSHA1": "EXCHeZghLzLEEQ6e0HAPd68Nacc=",
 			"path": "gopkg.in/yaml.v2",
-			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
-			"revisionTime": "2018-03-28T19:50:20Z"
+			"revision": "7649d4548cb53a614db133b2a8ac1f31859dda8c",
+			"revisionTime": "2020-11-17T15:46:20Z"
 		}
 	],
 	"rootPath": "github.com/newrelic/nri-nagios"

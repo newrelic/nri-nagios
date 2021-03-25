@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Release pipeline has been moved to Github Action
 - Code of conduct has been removed
+- Dependency yaml.v2 bumped to remedy a severity
 
 ## 2.6.0 (2020-01-28)
 ### Added
