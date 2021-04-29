@@ -46,7 +46,7 @@ func Test_collectServiceCheck(t *testing.T) {
 		"serviceCheck.command": "echo testout",
 		"serverName":           serverName,
 		"displayName":          "testname",
-		"entityName":           "serviceCheck:testname",
+		"entityName":           serverName,
 		"event_type":           "NagiosServiceCheckSample",
 		"testkey":              "testval",
 	}

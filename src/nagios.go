@@ -163,7 +163,7 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.W
 	ms := e.NewMetricSet(outputTableName,
 		metric.Attribute{Key: "serverName", Value: serverName},
 		metric.Attribute{Key: "displayName", Value: sc.Name},
-		metric.Attribute{Key: "entityName", Value: "serviceCheck:" + sc.Name},
+		metric.Attribute{Key: "entityName", Value: serverName},
 	)
 
 	// Add user-defined labels to the metric set
