@@ -1,0 +1,5 @@
+service_checks:
+  - name: test
+    command: ["test","args"]
+    labels:
+      env: testenv

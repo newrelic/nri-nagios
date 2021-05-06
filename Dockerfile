@@ -1,12 +1,16 @@
-FROM golang:1.10 as builder
-COPY . /go/src/github.com/newrelic/nri-nagios/
-RUN cd /go/src/github.com/newrelic/nri-nagios && \
-    make && \
-    strip ./bin/nri-nagios
+ARG GOLANG_VERSION=1.16
+
+FROM golang:${GOLANG_VERSION} as builder-nagios
+WORKDIR /code
+COPY go.mod .
+RUN go mod download
+
+COPY . ./
+RUN go build -o ./bin/nri-nagios cmd/nri-nagios/main.go; strip ./bin/nri-nagios
 
 FROM newrelic/infrastructure:latest
 ENV NRIA_IS_FORWARD_ONLY true
 ENV NRIA_K8S_INTEGRATION true
-COPY --from=builder /go/src/github.com/newrelic/nri-nagios/bin/nri-nagios /nri-sidecar/newrelic-infra/newrelic-integrations/bin/nri-nagios
-COPY --from=builder /go/src/github.com/newrelic/nri-nagios/nagios-definition.yml /nri-sidecar/newrelic-infra/newrelic-integrations/definition.yml
+COPY --from=builder-nagios /code/bin/nri-nagios /nri-sidecar/newrelic-infra/newrelic-integrations/bin/nri-nagios
+COPY --from=builder-nagios /code/nagios-definition.yml /nri-sidecar/newrelic-infra/newrelic-integrations/definition.yaml
 USER 1000
