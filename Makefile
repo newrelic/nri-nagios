@@ -1,7 +1,7 @@
 WORKDIR      := $(shell pwd)
 NATIVEOS	 := $(shell go version | awk -F '[ /]' '{print $$4}')
 NATIVEARCH	 := $(shell go version | awk -F '[ /]' '{print $$5}')
-INTEGRATION  := varnish
+INTEGRATION  := nagios
 GOFLAGS          = -mod=readonly
 BINARY_NAME   = nri-$(INTEGRATION)
 GOLANGCI_LINT	 = github.com/golangci/golangci-lint/cmd/golangci-lint
