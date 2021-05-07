@@ -73,11 +73,32 @@ jobs:
         shell: pwsh
         run: |
           .\build\windows\unit_tests.ps1
+  # can't run this step inside of container because of tests specific
+  test-integration-nix:
+    name: Run integration tests on *Nix
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: src/github.com/${{env.ORIGINAL_REPO_NAME}}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          path: src/github.com/${{env.ORIGINAL_REPO_NAME}}
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{env.GO_VERSION}}
+      - name: Integration test
+        env:
+          GOPATH: ${{ github.workspace }}
+        run: make integration-test
 
   prerelease:
     name: Build binary for *Nix/Win, create archives for *Nix/Win, create packages for *Nix, upload all artifacts into GH Release assets
     runs-on: ubuntu-20.04
-    needs: [validate, test-nix, test-windows, snyk]
+    needs: [golangci-lint, test-nix, test-windows, snyk, test-integration-nix]
     steps:
       - uses: actions/checkout@v2
       - name: Login to DockerHub
@@ -155,7 +176,6 @@ jobs:
           slack-bot-user-oauth-access-token: ${{ secrets.COREINT_SLACK_TOKEN }}
           slack-channel: ${{ secrets.COREINT_SLACK_CHANNEL }}
           slack-text: "❌ `${{ env.REPO_FULL_NAME }}`: prerelease pipeline failed."
-
 
   publish-to-s3:
     name: Send release assets to S3
