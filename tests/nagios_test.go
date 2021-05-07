@@ -1,4 +1,3 @@
-// +build integration
 
 package tests
 
@@ -6,7 +5,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/newrelic/infra-integrations-sdk/log"
+	"github.com/newrelic/nri-nagios/tests/jsonschema"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,12 +14,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 const (
 	containerName = "nri-nagios"
-	schema        = "nagios-schema.json"
+
 )
 
 func executeDockerCompose(containerName string, envVars []string) (string, string, error) {
@@ -55,35 +53,9 @@ func TestSuccessConnection(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, stdout)
 	response := string(stdout)
-
-	err=validateJSONSchema(schema, response)
-	if err!=nil{
-		fmt.Println(err.Error())
-	}
+	schemaURI := filepath.Join("testdata","nagios-schema.json")
+	err=jsonschema.Validate(schemaURI, response)
 	assert.Nil(t, err)
-
 	assert.Equal(t, "com.newrelic.nagios", gjson.Get(response, "name").String())
 	assert.Equal(t, "3", gjson.Get(response, "protocol_version").String())
-}
-
-func validateJSONSchema(fileName string, input string) error {
-	schemaURI := filepath.Join("testdata",schema)
-	log.Info("loading schema from %s",schemaURI)
-	schemaLoader := gojsonschema.NewReferenceLoader(schemaURI)
-	documentLoader := gojsonschema.NewStringLoader(input)
-
-	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
-	if err != nil {
-		return fmt.Errorf("Error loading JSON schema, error: %v", err)
-	}
-
-	if result.Valid() {
-		return nil
-	}
-	fmt.Printf("Errors for JSON schema: '%s'\n", schemaURI)
-	for _, desc := range result.Errors() {
-		fmt.Printf("\t- %s\n", desc)
-	}
-	fmt.Printf("\n")
-	return fmt.Errorf("The output of the integration doesn't have expected JSON format")
 }
