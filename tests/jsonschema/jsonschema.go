@@ -13,6 +13,9 @@ import (
 // of the JSON schema. It is used to build file URI required to load the JSON schema.
 // The second argument is the input string that is validated.
 func Validate(fileName string, input string) error {
+	fmt.Println("--------")
+	fmt.Println(input)
+	fmt.Println("--------")
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
