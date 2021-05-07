@@ -21,7 +21,7 @@ import (
 
 const (
 	containerName = "nri-nagios"
-	schema        = "jsonschema.json"
+	schema        = "nagios-schema.json"
 )
 
 func executeDockerCompose(containerName string, envVars []string) (string, string, error) {
@@ -73,7 +73,9 @@ func validateJSONSchema(fileName string, input string) error {
 		log.Error(err.Error())
 		return err
 	}
-	schemaURI := fmt.Sprintf("file://%s", filepath.Join(pwd, "testdata", fileName))
+
+
+	schemaURI := filepath.Join("testdata",nagios-schema.json)
 	log.Info("loading schema from %s",schemaURI)
 	schemaLoader := gojsonschema.NewReferenceLoader(schemaURI)
 	documentLoader := gojsonschema.NewStringLoader(input)
