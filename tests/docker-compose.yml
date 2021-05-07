@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  nagios:
+    image: jasonrivers/nagios:4.4.4
+    restart: always
+
+  nri-nagios:
+    image: golang:1.16
+    container_name: nri_nagios
+    working_dir: /code
+    depends_on:
+      - nagios
+    volumes:
+      - ../:/code
+    entrypoint: go run /code/cmd/nri-nagios/main.go

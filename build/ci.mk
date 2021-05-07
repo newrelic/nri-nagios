@@ -7,8 +7,9 @@ ci/deps:
 .PHONY : ci/debug-container
 ci/debug-container: ci/deps
 	@docker run --rm -it \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			--name "nri-$(INTEGRATION)-debug" \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			-e PRERELEASE=true \
 			-e GITHUB_TOKEN \
 			-e REPO_FULL_NAME \
@@ -21,23 +22,25 @@ ci/debug-container: ci/deps
 .PHONY : ci/validate
 ci/validate: ci/deps
 	@docker run --rm -t \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			--name "nri-$(INTEGRATION)-validate" \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			$(BUILDER_TAG) make validate
 
 .PHONY : ci/test
 ci/test: ci/deps
 	@docker run --rm -t \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			--name "nri-$(INTEGRATION)-test" \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			$(BUILDER_TAG) make test
 
 .PHONY : ci/snyk-test
 ci/snyk-test:
 	@docker run --rm -t \
 			--name "nri-$(INTEGRATION)-snyk-test" \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			-e SNYK_TOKEN \
 			-e GO111MODULE=auto \
 			snyk/snyk:golang snyk test --severity-threshold=high
@@ -46,8 +49,9 @@ ci/snyk-test:
 ci/build: ci/deps
 ifdef TAG
 	@docker run --rm -t \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			--name "nri-$(INTEGRATION)-build" \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			-e INTEGRATION \
 			-e TAG \
 			$(BUILDER_TAG) make release/build
@@ -60,8 +64,9 @@ endif
 ci/prerelease: ci/deps
 ifdef TAG
 	@docker run --rm -t \
-			-v $(CURDIR):/go/src/github.com/newrelic/nri-$(INTEGRATION) \
-			-w /go/src/github.com/newrelic/nri-$(INTEGRATION) \
+			--name "nri-$(INTEGRATION)-prerelease" \
+			-v $(CURDIR):/go/github.com/newrelic/nri-$(INTEGRATION) \
+			-w /go/github.com/newrelic/nri-$(INTEGRATION) \
 			-e INTEGRATION \
 			-e PRERELEASE=true \
 			-e GITHUB_TOKEN \

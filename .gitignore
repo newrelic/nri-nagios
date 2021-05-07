@@ -48,3 +48,5 @@ Makefile-deploy.mk
 dist
 *.gpg
 .idea
+
+vendor

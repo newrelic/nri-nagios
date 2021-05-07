@@ -1,0 +1,133 @@
+{
+
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "protocol_version": {
+      "type": "string"
+    },
+    "integration_version": {
+      "type": "string"
+    },
+    "data": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "entity": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "id_attributes": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Value": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "Key",
+                        "Value"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "type",
+                "id_attributes"
+              ]
+            },
+            "metrics": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "entityName": {
+                      "type": "string"
+                    },
+                    "env": {
+                      "type": "string"
+                    },
+                    "event_type": {
+                      "type": "string"
+                    },
+                    "serverName": {
+                      "type": "string"
+                    },
+                    "serviceCheck.command": {
+                      "type": "string"
+                    },
+                    "serviceCheck.error": {
+                      "type": "string"
+                    },
+                    "serviceCheck.message": {
+                      "type": "string"
+                    },
+                    "serviceCheck.name": {
+                      "type": "string"
+                    },
+                    "serviceCheck.status": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "displayName",
+                    "entityName",
+                    "env",
+                    "event_type",
+                    "serverName",
+                    "serviceCheck.command",
+                    "serviceCheck.error",
+                    "serviceCheck.message",
+                    "serviceCheck.name",
+                    "serviceCheck.status"
+                  ]
+                }
+              ]
+            },
+            "inventory": {
+              "type": "object"
+            },
+            "events": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "entity",
+            "metrics",
+            "inventory",
+            "events"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "protocol_version",
+    "integration_version",
+    "data"
+  ]
+}

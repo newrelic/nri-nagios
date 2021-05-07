@@ -1,8 +1,7 @@
 builds:
-  - id: nri-nagios-nix
-    main: ./src
+  - id: nri-nix
+    main: ./cmd/nri-nagios/main.go
     binary: nri-nagios
-    gobinary: "go1.9.7"
     ldflags:
       - -s -w -X main.integrationVersion={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildDate={{.Date}}
     goos:
@@ -17,10 +16,9 @@ builds:
       - goos: darwin
         goarch: 386
 
-  - id: nri-nagios-win
-    main: ./src
+  - id: nri-win
+    main: ./cmd/nri-nagios/main.go
     binary: nri-nagios
-    gobinary: "go1.9.7"
     ldflags:
       - -s -w -X main.integrationVersion={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildDate={{.Date}}
     goos:
