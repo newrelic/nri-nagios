@@ -50,7 +50,10 @@ func TestSuccessConnection(t *testing.T) {
 	envVars := []string{
 		"SERVICE_CHECKS_CONFIG=/code/tests/testdata/testconfig.yaml",
 	}
-	stdout, _, err := executeDockerCompose(containerName, envVars)
+	stdout, stdErr, err := executeDockerCompose(containerName, envVars)
+	fmt.Println("::::")
+	fmt.Println(stdErr)
+	fmt.Println("::::")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, stdout)
 	response := string(stdout)
