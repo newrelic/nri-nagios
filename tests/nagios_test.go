@@ -75,7 +75,7 @@ func validateJSONSchema(fileName string, input string) error {
 	}
 
 
-	schemaURI := filepath.Join("testdata",nagios-schema.json)
+	schemaURI := filepath.Join("testdata",schema)
 	log.Info("loading schema from %s",schemaURI)
 	schemaLoader := gojsonschema.NewReferenceLoader(schemaURI)
 	documentLoader := gojsonschema.NewStringLoader(input)
