@@ -1,6 +1,5 @@
 // +build integration
 
-
 package tests
 
 import (
@@ -68,13 +67,6 @@ func TestSuccessConnection(t *testing.T) {
 }
 
 func validateJSONSchema(fileName string, input string) error {
-	pwd, err := os.Getwd()
-	if err != nil {
-		log.Error(err.Error())
-		return err
-	}
-
-
 	schemaURI := filepath.Join("testdata",schema)
 	log.Info("loading schema from %s",schemaURI)
 	schemaLoader := gojsonschema.NewReferenceLoader(schemaURI)
