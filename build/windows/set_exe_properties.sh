@@ -32,7 +32,7 @@ sed \
   -e "s/{Year}/$Year/g" \
   -e "s/{Integration}/nri-$INTEGRATION/g" \
   -e "s/{IntegrationExe}/$INTEGRATION_EXE/g" \
-   ./build/windows/versioninfo.json.template > ./src/versioninfo.json
+   ./build/windows/versioninfo.json.template > ./cmd/nri-nagios/versioninfo.json
 
 # todo: do we need this export line
 export PATH="$PATH:/go/bin"
