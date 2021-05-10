@@ -2,10 +2,10 @@ WORKDIR      := $(shell pwd)
 NATIVEOS	 := $(shell go version | awk -F '[ /]' '{print $$4}')
 NATIVEARCH	 := $(shell go version | awk -F '[ /]' '{print $$5}')
 INTEGRATION  := nagios
+GO_FILES     := ./src/
 GOFLAGS          = -mod=readonly
 BINARY_NAME   = nri-$(INTEGRATION)
 GOLANGCI_LINT	 = github.com/golangci/golangci-lint/cmd/golangci-lint
-GO_FILES        := ./src/
 GOCOV            = github.com/axw/gocov/gocov
 GOCOV_XML		 = github.com/AlekSi/gocov-xml
 
