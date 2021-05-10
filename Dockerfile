@@ -6,7 +6,8 @@ COPY go.mod .
 RUN go mod download
 
 COPY . ./
-RUN go build -o ./bin/nri-nagios cmd/nri-nagios/main.go; strip ./bin/nri-nagios
+RUN go build -o ./bin/nri-nagios src/; strip ./bin/nri-nagios
+
 
 FROM newrelic/infrastructure:latest
 ENV NRIA_IS_FORWARD_ONLY true

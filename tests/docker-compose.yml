@@ -14,4 +14,4 @@ services:
       - nagios
     volumes:
       - ../:/code
-    entrypoint: go run /code/cmd/nri-nagios/main.go
+    entrypoint: go run /code/src/main.go

@@ -25,7 +25,6 @@ rpm --import /tmp/RPM-GPG-KEY-${GPG_MAIL}
 
 cd dist
 
-# TODO @cciutea - review this step
 find . -regex ".*\.\(rpm\)" | while read rpm_file; do
   echo "===> Signing $rpm_file"
   rpm --addsign "$rpm_file"
