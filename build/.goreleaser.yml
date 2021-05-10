@@ -1,6 +1,6 @@
 builds:
   - id: nri-nix
-    main: ./cmd/nri-nagios/main.go
+    main: ./src
     binary: nri-nagios
     ldflags:
       - -s -w -X main.integrationVersion={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildDate={{.Date}}
@@ -17,7 +17,7 @@ builds:
         goarch: 386
 
   - id: nri-win
-    main: ./cmd/nri-nagios/main.go
+    main: ./src
     binary: nri-nagios
     ldflags:
       - -s -w -X main.integrationVersion={{.Version}} -X main.gitCommit={{.Commit}} -X main.buildDate={{.Date}}
@@ -30,9 +30,9 @@ builds:
       pre: build/windows/set_exe_properties.sh {{ .Env.TAG }} "nagios"
 
 nfpms:
-  - id: nri-nagios-deb
+  - id: nri-deb
     builds:
-      - nri-nagios-nix
+      - nri-nix
     file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
     vendor: "New Relic, Inc."
     homepage: "https://www.newrelic.com/infrastructure"
@@ -58,9 +58,9 @@ nfpms:
     dependencies:
       - "newrelic-infra"
 
-  - id: nri-nagios-rpm
+  - id: nri-rpm
     builds:
-      - nri-nagios-nix
+      - nri-nix
     file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}"
     vendor: "New Relic, Inc."
     homepage: "https://www.newrelic.com/infrastructure"
@@ -91,18 +91,18 @@ nfpms:
           amd64: 1.x86_64
 
 archives:
-  - id: nri-nagios-nix
+  - id: nri-nix
     builds:
-      - nri-nagios-nix
+      - nri-nix
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Version }}_{{ .Arch }}_dirty"
     files:
       - nagios-config.yml.sample
       - nagios-definition.yml
     format: tar.gz
 
-  - id: nri-nagios-win
+  - id: nri-win
     builds:
-      - nri-nagios-win
+      - nri-win
     name_template: "{{ .ProjectName }}-{{ .Arch }}.{{ .Version }}_dirty"
     files:
       - nagios-config.yml.sample
