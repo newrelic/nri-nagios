@@ -5,6 +5,7 @@ INTEGRATION  := nagios
 GOFLAGS          = -mod=readonly
 BINARY_NAME   = nri-$(INTEGRATION)
 GOLANGCI_LINT	 = github.com/golangci/golangci-lint/cmd/golangci-lint
+GO_FILES        := ./src/
 GOCOV            = github.com/axw/gocov/gocov
 GOCOV_XML		 = github.com/AlekSi/gocov-xml
 
