@@ -24,13 +24,9 @@ validate:
 	@[ -f .semgrep.yml ] && semgrep_config=".semgrep.yml" || semgrep_config="p/golang" ; \
 	docker run --rm -v "${PWD}:/src:ro" --workdir /src returntocorp/semgrep -c "$$semgrep_config"
 
-
 compile:
 	@echo "=== $(INTEGRATION) === [ compile ]: Building $(BINARY_NAME)..."
 	@go build -o bin/$(BINARY_NAME) $(GO_FILES)
-
-
-compile: bin/$(BINARY_NAME)
 
 test:
 	@echo "=== $(INTEGRATION) === [ test ]: running unit tests..."
@@ -54,4 +50,4 @@ install: compile
 include $(CURDIR)/build/ci.mk
 include $(CURDIR)/build/release.mk
 
-.PHONY: all build clean tools tools-update deps validate compile test integration-test
+.PHONY: all build clean tools tools-update deps validate install compile test integration-test
