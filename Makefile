@@ -32,7 +32,6 @@ test:
 	@echo "=== $(INTEGRATION) === [ test ]: running unit tests..."
 	@go test -race ./... -count=1
 
-
 integration-test:
 	@echo "=== $(INTEGRATION) === [ test ]: running integration tests..."
 	@chmod 0600 tests/testdata/*
