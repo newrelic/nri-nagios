@@ -1,5 +1,5 @@
 name: com.newrelic.nagios
-description: Reports status and metrics for nagios service
+description: Reports status and metrics for nagios service. Legacy file kept for compatibility.
 protocol_version: 2
 os: linux
 
