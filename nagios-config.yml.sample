@@ -2,14 +2,14 @@ integrations:
 - name: nri-nagios
   env:
     # The number of service checks to run concurrently
-    concurrency: "1"
+    CONCURRENCY: "1"
 
     # The table name to save the service check results into
-    output_table_name: NagiosServiceCheckSample
+    OUTPUT_TABLE_NAME: NagiosServiceCheckSample
 
     # The absolute path to the service checks config file
-    service_checks_config: /etc/newrelic-infra/integrations.d/service_checks.yml
+    SERVICE_CHECKS_CONFIG: /etc/newrelic-infra/integrations.d/service_checks.yml
 
     # Fetching only metrics
-    metrics: "true"
+    METRICS: "true"
   interval: 15s
