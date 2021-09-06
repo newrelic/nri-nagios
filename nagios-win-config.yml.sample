@@ -1,0 +1,15 @@
+integrations:
+- name: nri-nagios
+  env:
+    # The number of service checks to run concurrently
+    CONCURRENCY: "1"
+
+    # The table name to save the service check results into
+    OUTPUT_TABLE_NAME: NagiosServiceCheckSample
+
+    # The absolute path to the service checks config file
+    SERVICE_CHECKS_CONFIG: C:\Program Files\New Relic\newrelic-infra\integrations.d\nagios-service-checks.yml
+
+    # Fetching only metrics
+    METRICS: "true"
+  interval: 15s

@@ -89,7 +89,8 @@ archives:
       - nri-win
     name_template: "{{ .ProjectName }}-{{ .Arch }}.{{ .Version }}_dirty"
     files:
-      - nagios-config.yml.sample
+      - nagios-service-checks.yml.sample
+      - nagios-win-config.yml.sample
       - src: 'legacy/nagios-win-definition.yml'
         dst: .
         strip_parent: true
