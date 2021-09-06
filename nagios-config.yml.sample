@@ -8,7 +8,7 @@ integrations:
     OUTPUT_TABLE_NAME: NagiosServiceCheckSample
 
     # The absolute path to the service checks config file
-    SERVICE_CHECKS_CONFIG: /etc/newrelic-infra/integrations.d/service_checks.yml
+    SERVICE_CHECKS_CONFIG: /etc/newrelic-infra/integrations.d/nagios-service-checks.yml
 
     # Fetching only metrics
     METRICS: "true"

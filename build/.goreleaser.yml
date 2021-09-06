@@ -48,6 +48,8 @@ nfpms:
     contents:
       - src: "nagios-config.yml.sample"
         dst: "/etc/newrelic-infra/integrations.d/nagios-config.yml.sample"
+      - src: "nagios-service-checks.yml.sample"
+        dst: "/etc/newrelic-infra/integrations.d/nagios-service-checks.yml.sample"
       - src: "CHANGELOG.md"
         dst: "/usr/share/doc/nri-nagios/CHANGELOG.md"
       - src: "README.md"
@@ -76,6 +78,7 @@ archives:
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Version }}_{{ .Arch }}_dirty"
     files:
       - nagios-config.yml.sample
+      - nagios-service-checks.yml.sample
       - src: 'legacy/nagios-definition.yml'
         dst: .
         strip_parent: true
