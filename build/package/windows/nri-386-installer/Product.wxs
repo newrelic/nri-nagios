@@ -29,6 +29,7 @@
             <ComponentGroupRef Id="CustomPluginsBinComponent"/>
             <ComponentGroupRef Id="CustomPluginsComponent"/>
             <ComponentGroupRef Id="PluginConfigsComponent"/>
+            <ComponentGroupRef Id="ServiceChecksComponent"/>
         </Feature>
     </Product>
 
@@ -90,7 +91,15 @@
             <Component Id="CMP_NRI_$(var.IntegrationName)_CONFIG_YML" Guid="2956c6f3-fc4d-4156-bb4d-74cbe97b282b" Win64="no">
                 <File Id="FILE_NRI_$(var.IntegrationName)_CONFIG_YML"
                       Name="$(var.IntegrationName)-config.yml.sample"
-                      Source="$(var.BinariesPath)New Relic\newrelic-infra\integrations.d\$(var.IntegrationName)-config.yml.sample"
+                      Source="$(var.BinariesPath)New Relic\newrelic-infra\integrations.d\$(var.IntegrationName)-win-config.yml.sample"
+                      KeyPath="yes"/>
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="ServiceChecksComponent" Directory="PluginConfigsFolder">
+            <Component Id="CMP_NRI_$(var.IntegrationName)_SERVICE_CHECKS_YML" Guid="7d6cda36-364b-401f-9d51-f8cb90a0f155" Win64="no">
+                <File Id="FILE_NRI_$(var.IntegrationName)_SERVICE_CHECKS_YML"
+                      Name="$(var.IntegrationName)-service-checks.yml.sample"
+                      Source="$(var.BinariesPath)New Relic\newrelic-infra\integrations.d\$(var.IntegrationName)-service-checks.yml.sample"
                       KeyPath="yes"/>
             </Component>
         </ComponentGroup>
