@@ -7,7 +7,7 @@ services:
     restart: always
 
   nri-nagios:
-    image: golang:1.16
+    image: golang:1.18
     container_name: nri_nagios
     working_dir: /code
     depends_on:
