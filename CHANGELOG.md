@@ -6,7 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.8.3  (2022-07-05)
-
 ### Changed
 - Bump dependencies
 ### Added
@@ -14,8 +13,8 @@ Added support for more distributions:
 - RHEL(EL) 9
 - Ubuntu 22.04
 
-## 2.8.2  (2022-06-07)
 
+## 2.8.2  (2022-06-07)
 ### Changed
 - Bump Go to 1.18
 - Bump dependencies
