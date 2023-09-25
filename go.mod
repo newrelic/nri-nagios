@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/newrelic/infra-integrations-sdk v3.7.3+incompatible
 	github.com/stretchr/testify v1.8.4
-	github.com/tidwall/gjson v1.14.4
+	github.com/tidwall/gjson v1.17.0
 	github.com/xeipuuv/gojsonschema v1.2.0
 	gopkg.in/yaml.v2 v2.4.0
 )
