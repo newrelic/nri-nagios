@@ -3,7 +3,7 @@ module github.com/newrelic/nri-nagios
 go 1.21
 
 require (
-	github.com/newrelic/infra-integrations-sdk v3.7.3+incompatible
+	github.com/newrelic/infra-integrations-sdk v3.8.0+incompatible
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.17.0
 	github.com/xeipuuv/gojsonschema v1.2.0
