@@ -1,3 +1,4 @@
+//go:build integration
 // +build integration
 
 package tests
@@ -6,12 +7,13 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/newrelic/nri-nagios/tests/jsonschema"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/newrelic/nri-nagios/tests/jsonschema"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
@@ -19,7 +21,6 @@ import (
 
 const (
 	containerName = "nri-nagios"
-
 )
 
 func executeDockerCompose(containerName string, envVars []string) (string, string, error) {
@@ -29,8 +30,9 @@ func executeDockerCompose(containerName string, envVars []string) (string, strin
 		cmdLine = append(cmdLine, envVars[i])
 	}
 	cmdLine = append(cmdLine, containerName)
-	fmt.Printf("executing: docker-compose %s\n", strings.Join(cmdLine, " "))
-	cmd := exec.Command("docker-compose", cmdLine...)
+	cmdLine = append([]string{"compose"}, cmdLine...)
+	fmt.Printf("executing: docker %s\n", strings.Join(cmdLine, " "))
+	cmd := exec.Command("docker", cmdLine...)
 	var outbuf, errbuf bytes.Buffer
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
@@ -54,8 +56,8 @@ func TestSuccessConnection(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, stdout)
 	response := string(stdout)
-	schemaURI := filepath.Join("testdata","nagios-schema.json")
-	err=jsonschema.Validate(schemaURI, response)
+	schemaURI := filepath.Join("testdata", "nagios-schema.json")
+	err = jsonschema.Validate(schemaURI, response)
 	assert.Nil(t, err)
 	assert.Equal(t, "com.newrelic.nagios", gjson.Get(response, "name").String())
 	assert.Equal(t, "3", gjson.Get(response, "protocol_version").String())
