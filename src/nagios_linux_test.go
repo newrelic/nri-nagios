@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package main
@@ -7,7 +8,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/newrelic/infra-integrations-sdk/integration"
+	"github.com/newrelic/infra-integrations-sdk/v3/integration"
 	"github.com/stretchr/testify/assert"
 )
 
