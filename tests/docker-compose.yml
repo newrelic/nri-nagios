@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   nagios:
-    image: jasonrivers/nagios:4.5.2
+    image: jasonrivers/nagios:4.5.7
     restart: always
 
   nri-nagios:
