@@ -121,11 +121,20 @@ func Test_parseOutput1(t *testing.T) {
 	expectedLongServiceOutput := ""
 	expectedServicePerfData := map[string]float64{}
 
-	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case1)
+	data, err := parseOutput(case1)
+	assert.Nil(t, err)
 
-	assert.Equal(t, expectedServiceOutput, serviceOutput)
-	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
-	assert.Equal(t, expectedServicePerfData, servicePerfData)
+	assert.Equal(t, expectedServiceOutput, data["serviceOutput"])
+	assert.Equal(t, expectedLongServiceOutput, data["longServiceOutput"])
+	assert.Equal(t, expectedServicePerfData, parseMetrics(data))
+}
+
+func Test_parseOutput_Error(t *testing.T) {
+	caseError := ""
+
+	_, err := parseOutput(caseError)
+
+	assert.Error(t, err)
 }
 
 func Test_parseOutput2(t *testing.T) {
@@ -137,11 +146,12 @@ func Test_parseOutput2(t *testing.T) {
 		"/root": 2643.0,
 	}
 
-	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case2)
+	data, err := parseOutput(case2)
+	assert.Nil(t, err)
 
-	assert.Equal(t, expectedServiceOutput, serviceOutput)
-	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
-	assert.Equal(t, expectedServicePerfData, servicePerfData)
+	assert.Equal(t, expectedServiceOutput, data["serviceOutput"])
+	assert.Equal(t, expectedLongServiceOutput, data["longServiceOutput"])
+	assert.Equal(t, expectedServicePerfData, parseMetrics(data))
 }
 
 func Test_parseOutput3(t *testing.T) {
@@ -155,11 +165,12 @@ func Test_parseOutput3(t *testing.T) {
 		"/home": 69357.0,
 	}
 
-	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case3)
+	data, err := parseOutput(case3)
+	assert.Nil(t, err)
 
-	assert.Equal(t, expectedServiceOutput, serviceOutput)
-	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
-	assert.Equal(t, expectedServicePerfData, servicePerfData)
+	assert.Equal(t, expectedServiceOutput, data["serviceOutput"])
+	assert.Equal(t, expectedLongServiceOutput, data["longServiceOutput"])
+	assert.Equal(t, expectedServicePerfData, parseMetrics(data))
 }
 
 func Test_parseOutput4(t *testing.T) {
@@ -172,9 +183,10 @@ func Test_parseOutput4(t *testing.T) {
 		"test2": 3452.0,
 	}
 
-	serviceOutput, longServiceOutput, servicePerfData := parseOutput(case4)
+	data, err := parseOutput(case4)
+	assert.Nil(t, err)
 
-	assert.Equal(t, expectedServiceOutput, serviceOutput)
-	assert.Equal(t, expectedLongServiceOutput, longServiceOutput)
-	assert.Equal(t, expectedServicePerfData, servicePerfData)
+	assert.Equal(t, expectedServiceOutput, data["serviceOutput"])
+	assert.Equal(t, expectedLongServiceOutput, data["longServiceOutput"])
+	assert.Equal(t, expectedServicePerfData, parseMetrics(data))
 }

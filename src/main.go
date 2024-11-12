@@ -3,6 +3,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -28,11 +29,12 @@ const (
 )
 
 var (
-	integrationVersion = "0.0.0"
-	gitCommit          = ""
-	buildDate          = ""
-	reOutput           = regexp.MustCompile(`^(?P<serviceOutput>[^|]+)(?:\|(?P<metrics1>[^\n]*)\n?)?(?P<longServiceOutput>[^|]*)?(?:\|(?P<metrics2>[^|]*))?$`)
-	reMetrics          = regexp.MustCompile(`(?P<key>[^\s;,]+)=(?P<val>[\d\.]+)`)
+	integrationVersion  = "0.0.0"
+	gitCommit           = ""
+	buildDate           = ""
+	reOutput            = regexp.MustCompile(`^(?P<serviceOutput>[^|]+)(?:\|(?P<metrics1>[^\n]*)\n?)?(?P<longServiceOutput>[^|]*)?(?:\|(?P<metrics2>[^|]*))?$`)
+	reMetrics           = regexp.MustCompile(`(?P<key>[^\s;,]+)=(?P<val>[\d\.]+)`)
+	errLessMatchesFound = errors.New("found less matches than expected")
 )
 
 type argumentList struct {
@@ -178,18 +180,22 @@ func collectServiceCheck(sc serviceCheck, i *integration.Integration, wg *sync.W
 	}
 
 	if sc.ParseOutput {
-		serviceOutput, longServiceOutput, parsedMetrics := parseOutput(stdout)
+		rawMetrics, err := parseOutput(stdout)
+		if err != nil {
+			log.Error("Error parsing the output: %s", err)
+		}
+		parsedMetrics := parseMetrics(rawMetrics)
 		for key, value := range parsedMetrics {
 			if err := ms.SetMetric(key, value, metric.GAUGE); err != nil {
 				log.Error("Failed to set metric %s for %s: %s", key, value, err.Error())
 			}
 		}
 
-		if err := ms.SetMetric("serviceCheck.serviceOutput", serviceOutput, metric.ATTRIBUTE); err != nil {
+		if err := ms.SetMetric("serviceCheck.serviceOutput", rawMetrics["serviceOutput"], metric.ATTRIBUTE); err != nil {
 			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.serviceOutput", sc.Name, err.Error())
 		}
 
-		if err := ms.SetMetric("serviceCheck.longServiceOutput", longServiceOutput, metric.ATTRIBUTE); err != nil {
+		if err := ms.SetMetric("serviceCheck.longServiceOutput", rawMetrics["longServiceOutput"], metric.ATTRIBUTE); err != nil {
 			log.Error("Failed to set metric %s for %s: %s", "serviceCheck.longServiceOutput", sc.Name, err.Error())
 		}
 	}
@@ -267,22 +273,25 @@ func runCommand(name string, args ...string) (stdout string, stderr string, exit
 	return
 }
 
-func parseOutput(output string) (string, string, map[string]float64) {
+func parseOutput(output string) (map[string]string, error) {
 	match := reOutput.FindStringSubmatch(output)
 	result := make(map[string]string)
-	for i, name := range reOutput.SubexpNames() {
+	subexpNames := reOutput.SubexpNames()
+	// There will never be a case when matches would be more than subexpNames
+	if len(subexpNames) > len(match) {
+		return nil, errLessMatchesFound
+	}
+	for i, name := range subexpNames {
 		if i != 0 && name != "" {
 			result[name] = match[i]
 		}
 	}
-
-	rawMetrics := result["metrics1"] + "\n" + result["metrics2"]
-	parsedMetrics := parseMetrics(rawMetrics)
-
-	return result["serviceOutput"], result["longServiceOutput"], parsedMetrics
+	return result, nil
 }
 
-func parseMetrics(rawMetrics string) map[string]float64 {
+// parses the metrics from the output of the service check
+func parseMetrics(metrics map[string]string) map[string]float64 {
+	rawMetrics := metrics["metrics1"] + "\n" + metrics["metrics2"]
 	matches := reMetrics.FindAllStringSubmatch(rawMetrics, -1)
 	results := map[string]float64{}
 	for _, match := range matches {
