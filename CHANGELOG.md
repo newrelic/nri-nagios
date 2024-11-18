@@ -9,6 +9,9 @@ Unreleased section should follow [Release Toolkit](https://github.com/newrelic/r
 
 ## Unreleased
 
+### bugfix
+- Prevent forceful exit on invalid output commands
+
 ## v2.10.0 - 2024-10-15
 
 ### dependency
