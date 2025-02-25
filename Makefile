@@ -5,6 +5,8 @@ INTEGRATION  := nagios
 GO_FILES     := ./src/
 GOFLAGS          = -mod=readonly
 BINARY_NAME   = nri-$(INTEGRATION)
+GO_VERSION 		?= $(shell grep '^go ' go.mod | awk '{print $$2}')
+BUILDER_IMAGE 	?= "ghcr.io/newrelic/coreint-automation:latest-go$(GO_VERSION)-ubuntu16.04"
 
 all: build
 
