@@ -1,0 +1,15 @@
+name: Batch automated release creation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * 2"
+
+
+permissions:
+  contents: write
+
+jobs:
+  release_management:
+    uses: newrelic/coreint-automation/.github/workflows/reusable_release_automation_batch.yaml@batch-release-automation
+    secrets: inherit
