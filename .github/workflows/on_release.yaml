@@ -1,4 +1,4 @@
-name: Create release artifacts
+name: Batch release pipeline
 
 on:
   release:
@@ -13,9 +13,7 @@ permissions:
 
 jobs:
   release:
-    uses: newrelic/coreint-automation/.github/workflows/reusable_on_release.yaml@v3
+    uses: newrelic/coreint-automation/.github/workflows/reusable_on_release_batch.yaml@batch-release-automation
     with:
-      integration: nagios
       tag: ${{ github.event.release.tag_name }}
-      upload_fips_packages: true
     secrets: inherit
