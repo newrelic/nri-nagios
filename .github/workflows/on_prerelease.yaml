@@ -1,4 +1,4 @@
-name: Batch prerelease pipeline
+name: Prerelease pipeline
 on:
   release:
     types:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   pre-release:
-    uses: newrelic/coreint-automation/.github/workflows/reusable_pre_release_build.yaml@v4
+    uses: newrelic/coreint-automation/.github/workflows/reusable_pre_release.yaml@v3
     with:
       tag: ${{ github.event.release.tag_name }}
       integration: nagios
