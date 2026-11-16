@@ -2,8 +2,9 @@ name: Batch automated release creation
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "30 3 * * 2"
+  # Cron disabled for now, enable it when the batch flow goes live
+  # schedule:
+  #   - cron: "30 3 * * 2"
 
 
 permissions:
